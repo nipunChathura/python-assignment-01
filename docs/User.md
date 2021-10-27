@@ -1,11 +1,11 @@
 # USER
 ###User Properties
-```java
-class User{
-    private String userName;
-    private String password;
-    private String userType;
-}
+```python
+class User:
+    def __init__(self,username,password,user_type):
+        self.username = username
+        self.password = password
+        self.user_type = user_type
 ```
 ### User Type 
 * Owner

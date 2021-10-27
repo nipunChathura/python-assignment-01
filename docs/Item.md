@@ -1,12 +1,12 @@
 # ITEM
 ### Item properties 
-```java
-class Item{
-    private String id;
-    private String name;
-    private String qty;
-    private String price;
-}
+```python
+class Item:
+    def __init__(self,user_id,name,qty,price):
+        self.user_id = user_id
+        self.name = name
+        self.qty = qty
+        self.price = price
 ```
 ### Item create 
 ```cmd

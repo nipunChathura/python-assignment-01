@@ -1,5 +1,12 @@
 # USER
-
+###User Properties
+```java
+class User{
+    private String userName;
+    private String password;
+    private String userType;
+}
+```
 ### User Type 
 * Owner
 * Customer

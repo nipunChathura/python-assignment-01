@@ -1,5 +1,6 @@
 import sys
-from item import Item
+import item
+import user
 
 if __name__ == "__main__":
     arguments = sys.argv
@@ -10,6 +11,7 @@ if __name__ == "__main__":
     print(section, command, params)
 
     if section == "user":
-        item = Item()
+        user.set_command_and_params(command, params)
+    elif section == "item":
         item.set_command_and_params(command, params)
 

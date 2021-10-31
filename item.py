@@ -3,8 +3,8 @@ import json
 import os
 from pprint import pprint
 
-__db_location__ = "db"
-__item_folder__ = f"{__db_location__}/item"
+__db_location__ = "db/item"
+__item_folder__ = f"{__db_location__}/items"
 __item_last_id__ = f"{__db_location__}/item_id.db"
 
 
@@ -22,11 +22,11 @@ def set_command_and_params(command, params):
     elif command == "create":
         __item_create__(*params)
     elif command == "find":
-        pass
-    elif command == "find all":
-        pass
+        __item_find__(*params)
+    elif command == "findAll":
+        __item_all__()
     elif command == "search":
-        pass
+        __item_search__(*params)
 
 
 def __item_create__(name, qty, price):
@@ -39,19 +39,26 @@ def __item_create__(name, qty, price):
 
 
 def __item_find__(item_id):
-    print("Item find")
+    item = Item()
+    item.find(item_id)
+    print(item.item_id, item.name, item.qty, item.price)
 
 
 def __item_all__():
-    print("Item All")
+    item = Item()
+    items = item.all()
+    pprint(items)
 
 
 def __item_search__(key, value):
-    print("Item search")
+    item = Item()
+    results = item.search(key, value)
+    pprint(results)
 
 
 class Item:
     def __init__(self):
+        self.item_id = None
         self.price = None
         self.qty = None
         self.name = None
@@ -62,21 +69,52 @@ class Item:
             self.last_id = 0
 
     def save(self):
-        print("save ", self.name, self.qty, self.price)
         item_id = self.last_id + 1
-        print("item_id", item_id)
         _data_ = {
-            "id": item_id,
+            "itemId": item_id,
             "name": self.name,
             "qty": self.qty,
             "price": self.price
         }
-        print("_data_", _data_.values().__str__())
         with open(f"{__item_folder__}/{item_id}.db", "w") as item_file:
             json.dump(_data_, item_file)
-
-        print(self.last_id)
 
         self.last_id += 1
         with open(__item_last_id__, "w") as f:
             f.write(str(self.last_id))
+
+    def all(self):
+        item_file_names = os.listdir(__item_folder__)
+        items = []
+        for item_file_name in item_file_names:
+            item = Item()
+            Item.__get_item_by_path(
+                item, f"{__item_folder__}/{item_file_name}")
+            items.append(item)
+        return items
+
+    def find(self, item_id):
+        Item.__get_item_by_path(self, f"{__item_folder__}/{item_id}.db")
+
+    def __get_item_by_path(item, path):
+        with open(path, "r") as item_file:
+            _data_ = json.load(item_file)
+            item.item_id = int(_data_["itemId"])
+            item.name = _data_["name"]
+            item.qty = _data_["qty"]
+            item.price = _data_["price"]
+
+    def search(self, key, value):
+        items = self.all()
+        result_items = []
+        for item in items:
+            item_value = getattr(item, key)
+            if item_value == value:
+                result_items.append(item)
+        return result_items
+
+    def __repr__(self):
+        return f"itemId:{self.item_id},name:{self.name},price:{self.qty},price:{self.price}"
+
+    def __str__(self):
+        return f"itemId:{self.item_id},name:{self.name},price:{self.qty},price:{self.price}"

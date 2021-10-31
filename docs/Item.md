@@ -2,25 +2,25 @@
 ### Item properties 
 ```python
 class Item:
-    def __init__(self,user_id,name,qty,price):
-        self.user_id = user_id
+    def __init__(self,item_id,name,qty,price):
+        self.item_id = item_id
         self.name = name
         self.qty = qty
         self.price = price
 ```
 ### Item create 
 ```cmd
-item create <id> <name> <qty> <price>
+self create <id> <name> <qty> <price>
 ```
 ### Item find by id
 ```cmd
-item find <id>
+self find <id>
 ```
 ### Item find all
 ```cmd
-item find all
+self find all
 ```
 ### Item search 
 ```cmd
-item search <key> <value>
+self search <key> <value>
 ```

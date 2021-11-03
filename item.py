@@ -47,7 +47,9 @@ def __item_find__(item_id):
 def __item_all__():
     item = Item()
     items = item.all()
-    pprint(items)
+    for item in items:
+        print(item.item_id, item.name, item.qty, item.price)
+    # pprint(items)
 
 
 def __item_search__(key, value):
@@ -83,7 +85,8 @@ class Item:
         with open(__item_last_id__, "w") as f:
             f.write(str(self.last_id))
 
-    def all(self):
+    @staticmethod
+    def all():
         item_file_names = os.listdir(__item_folder__)
         items = []
         for item_file_name in item_file_names:
@@ -96,13 +99,13 @@ class Item:
     def find(self, item_id):
         Item.__get_item_by_path(self, f"{__item_folder__}/{item_id}.db")
 
-    def __get_item_by_path(item, path):
+    def __get_item_by_path(self, path):
         with open(path, "r") as item_file:
             _data_ = json.load(item_file)
-            item.item_id = int(_data_["itemId"])
-            item.name = _data_["name"]
-            item.qty = _data_["qty"]
-            item.price = _data_["price"]
+            self.item_id = int(_data_["itemId"])
+            self.name = _data_["name"]
+            self.qty = _data_["qty"]
+            self.price = _data_["price"]
 
     def search(self, key, value):
         items = self.all()

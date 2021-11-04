@@ -1,6 +1,7 @@
 import json
 import os
 from pprint import pprint
+import item
 
 __db_location__ = "db/order"
 __order_folder__ = f"{__db_location__}/order"
@@ -15,27 +16,48 @@ def init():
 
 def db():
     os.makedirs(__order_folder__)
+    os.makedirs(__order_detail_folder__)
 
 
 def set_command_and_params(command, params):
     if command == "init":
         init()
     elif command == "add":
-        __add_order__(*params)
+        __add_order__()
         pass
     elif command == "find":
         __find_order__(*params)
         pass
     elif command == "findAll":
-        __find_all_order__
+        __find_all_order__()
         pass
     elif command == "search":
         __order_search__(*params)
         pass
 
 
-def __add_order__(order_id, customer_id, total_price, order_detail_location):
-    pass
+def __add_order__():
+    print("Enter order details")
+    o = Order()
+    o.order_id = o.last_order_id+1
+    o.customer_id = input("customer id : ")
+    total_price = 0
+
+    items = item.get_items()
+    for i in items:
+        details = Detail()
+        status = input(i.name+" "+i.price+" plz enter add or skip item")
+        if status == "add":
+            details.order_id = o.order_id
+            details.item_id = i.item_id
+            details.item_price = i.price
+            details.item_qty = input("The number of items you take : ")
+            details.item_total_price = details.item_price*details.item_qty
+        total_price += details.item_total_price
+        details.save(details)
+    o.total_price = total_price
+    o.save(o)
+    print("Order is success")
 
 
 def __find_all_order__():
@@ -60,9 +82,9 @@ def __find_order_detail_by_order_id(order_id):
 
 class Order:
     def __init__(self):
-        self.order_detail_location = None
+        self.order_id = None
         self.total_price = None
-        self.customerId = None
+        self.customer_id = None
         if os.path.exists(__order_last_id__):
             with open(__order_last_id__, "r") as last_order_id_f:
                 self.last_order_id = int(last_order_id_f.readline())
@@ -70,14 +92,12 @@ class Order:
             self.last_order_id = 0
 
     def save(self):
-        order_id = self.last_order_id + 1
         _data_ = {
-            "orderId": order_id,
-            "customerId": self.customerId,
+            "orderId": self.order_id,
+            "customerId": self.customer_id,
             "totalPrice": self.total_price,
-            "orderDetailLocation": self.order_detail_location
         }
-        with open(f"{__order_folder__}/{order_id}.db", "w") as order_file:
+        with open(f"{__order_folder__}/{self.order_id}.db", "w") as order_file:
             json.dump(_data_, order_file)
 
         self.last_order_id += 1
@@ -87,6 +107,7 @@ class Order:
 
 class Detail:
     def __init__(self):
+        self.order_id = None
         self.item_total_price = None
         self.item_price = None
         self.item_qty = None
@@ -98,11 +119,11 @@ class Detail:
         else:
             self.last_order_detail_id = 0
 
-    def save(self, order_id):
+    def save(self):
         order_detail_id = self.last_order_detail_id + 1
         _data_ = {
             "orderDetailsId": order_detail_id,
-            "orderId": order_id,
+            "orderId": self.order_id,
             "itemId": self.item_id,
             "itemQty": self.item_qty,
             "itemPrice": self.item_price,

@@ -1,6 +1,7 @@
 import sys
 import item
 import user
+import order
 
 if __name__ == "__main__":
     arguments = sys.argv
@@ -14,4 +15,6 @@ if __name__ == "__main__":
         user.set_command_and_params(command, params)
     elif section == "item":
         item.set_command_and_params(command, params)
+    elif section == "order":
+        order.set_command_and_params(command, params)
 

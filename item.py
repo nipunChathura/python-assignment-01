@@ -52,6 +52,11 @@ def __item_all__():
     # pprint(items)
 
 
+def get_items():
+    item = Item()
+    return item.all()
+
+
 def __item_search__(key, value):
     item = Item()
     results = item.search(key, value)

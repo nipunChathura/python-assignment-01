@@ -10,17 +10,17 @@ class Item:
 ```
 ### Item create 
 ```cmd
-self create <id> <name> <qty> <price>
+item create <id> <name> <qty> <price>
 ```
 ### Item find by id
 ```cmd
-self find <id>
+item find <id>
 ```
 ### Item find all
 ```cmd
-self find all
+item find all
 ```
 ### Item search 
 ```cmd
-self search <key> <value>
+item search <key> <value>
 ```

@@ -39,25 +39,28 @@ def set_command_and_params(command, params):
 def __add_order__():
     print("Enter order details")
     o = Order()
-    o.order_id = o.last_order_id+1
+    o.order_id = o.last_order_id + 1
     o.customer_id = input("customer id : ")
     total_price = 0
 
     items = item.get_items()
     for i in items:
         details = Detail()
-        status = input(i.name+" "+i.price+" plz enter add or skip item")
+        status = input(i.name + " " + i.price + " plz enter add or skip item : ")
         if status == "add":
             details.order_id = o.order_id
             details.item_id = i.item_id
-            details.item_price = i.price
-            details.item_qty = input("The number of items you take : ")
-            details.item_total_price = details.item_price*details.item_qty
-        total_price += details.item_total_price
-        details.save(details)
+            details.item_price = int(i.price)
+            details.item_qty = int(input("The number of items you take : "))
+            details.item_total_price = int(i.price) * int(details.item_qty)
+            total_price += int(details.item_total_price)
+            details.save()
+        else:
+            pass
+
     o.total_price = total_price
-    o.save(o)
-    print("Order is success")
+    o.save()
+    print("Success added")
 
 
 def __find_all_order__():
@@ -83,7 +86,7 @@ def __find_order_detail_by_order_id(order_id):
 class Order:
     def __init__(self):
         self.order_id = None
-        self.total_price = None
+        self.total_price = int
         self.customer_id = None
         if os.path.exists(__order_last_id__):
             with open(__order_last_id__, "r") as last_order_id_f:
@@ -115,7 +118,6 @@ class Detail:
         if os.path.exists(__order_detail_last_id__):
             with open(__order_detail_last_id__, "r") as last_order_detail_id_f:
                 self.last_order_detail_id = int(last_order_detail_id_f.readline())
-
         else:
             self.last_order_detail_id = 0
 
@@ -129,9 +131,9 @@ class Detail:
             "itemPrice": self.item_price,
             "itemTotalPrice": self.item_total_price
         }
-        with open(f"{__order_folder__}/{order_detail_id}.db", "w") as order_file:
-            json.dump(_data_, order_file)
+        with open(f"{__order_detail_folder__}/{self.last_order_detail_id + 1}.db", "w") as order_details_file:
+            json.dump(_data_, order_details_file)
 
         self.last_order_detail_id += 1
-        with open(__order_last_id__, "w") as f:
+        with open(__order_detail_last_id__, "w") as f:
             f.write(str(self.last_order_detail_id))

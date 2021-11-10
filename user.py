@@ -1,13 +1,9 @@
-from os import waitpid
-import sys
 import json
 import os
-from pprint import pprint
 
 __db_location__ = "db"
 __session_file__ = f"{__db_location__}/session.db"
 __user_folder__ = f"{__db_location__}/user"
-__user_last_id__ = f"{__db_location__}/user_id.db"
 
 
 def init():
@@ -36,12 +32,43 @@ def login(username):
     f.close
 
 
+def sing_up():
+    user = User()
+    user.username = input("Enter user name : ")
+    user.password = input("Enter password : ")
+    user.type = input("Enter user type is CUSTOMER or OWNER : ")
+    user.save()
+
+
 def set_command_and_params(command, params):
     if command == "init":
         init()
     elif command == "singup":
-        print("User is sing up")
+        sing_up()
     elif command == "login":
         login(*params)
     elif command == "view":
         view()
+
+
+class User:
+    def __init__(self):
+        self.type = None
+        self.password = None
+        self.username = None
+        if os.path.exists(__user_folder__):
+            pass
+        else:
+            init()
+
+    def save(self):
+        # user_id = self.last_id + 1
+        _data_ = {
+            "userName": self.username,
+            "password": self.password,
+            "usertype": self.type
+        }
+
+        with open(f"{__user_folder__}/{self.username}.db", "w") as item_file:
+            json.dump(_data_, item_file)
+        print(self.username, " is success added")

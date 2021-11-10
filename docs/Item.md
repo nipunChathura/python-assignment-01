@@ -10,7 +10,7 @@ class Item:
 ```
 ### Item create 
 ```cmd
-item create <id> <name> <qty> <price>
+item create 
 ```
 ### Item find by id
 ```cmd

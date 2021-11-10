@@ -20,7 +20,7 @@ def set_command_and_params(command, params):
     if command == "init":
         init()
     elif command == "create":
-        __item_create__(*params)
+        __item_create__()
     elif command == "find":
         __item_find__(*params)
     elif command == "findAll":
@@ -29,13 +29,13 @@ def set_command_and_params(command, params):
         __item_search__(*params)
 
 
-def __item_create__(name, qty, price):
+def __item_create__():
     item = Item()
-    item.name = name
-    item.qty = qty
-    item.price = price
-    print(item.name, item.qty, item.price)
+    item.name = input("Enter item name : ")
+    item.qty = input("Enter item qty : ")
+    item.price = input("Enter item base price : ")
     item.save()
+    print("Item is success added")
 
 
 def __item_find__(item_id):

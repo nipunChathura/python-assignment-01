@@ -25,11 +25,21 @@ def view():
     print(username)
 
 
-def login(username):
-    user = username
-    f = open(__session_file__, "w")
-    f.write(username)
-    f.close
+def login():
+    user = User()
+    username = input("Username : ")
+    password = input("Password : ")
+    user.find(username)
+    if username == user.username:
+        if password == user.password:
+            print(user.username, " is login")
+            f = open(__session_file__, "w")
+            f.write(username)
+            f.close
+        else:
+            print("Incorrect password")
+    else:
+        print("Incorrect username")
 
 
 def sing_up():
@@ -46,7 +56,7 @@ def set_command_and_params(command, params):
     elif command == "singup":
         sing_up()
     elif command == "login":
-        login(*params)
+        login()
     elif command == "view":
         view()
 
@@ -72,3 +82,16 @@ class User:
         with open(f"{__user_folder__}/{self.username}.db", "w") as item_file:
             json.dump(_data_, item_file)
         print(self.username, " is success added")
+
+    def find(self, username):
+        User.__get_item_by_path(self, f"{__user_folder__}/{username}.db")
+
+    def __get_item_by_path(self, path):
+        try:
+            with open(path, "r") as user_file:
+                _data_ = json.load(user_file)
+                self.username = _data_["userName"]
+                self.password = _data_["password"]
+                self.type = _data_["usertype"]
+        except FileNotFoundError:
+            print("user is not exists")

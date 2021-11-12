@@ -1,4 +1,4 @@
-# instructions 
+# Instructions 
  #### This software is pos system.
  #### This software is execute by terminal commands.
  

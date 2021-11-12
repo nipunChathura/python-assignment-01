@@ -1,7 +1,7 @@
 import json
 import os
-from pprint import pprint
-import item
+from entity import item
+import user
 
 __db_location__ = "db/order"
 __order_folder__ = f"{__db_location__}/order"
@@ -24,52 +24,53 @@ def set_command_and_params(command, params):
         init()
     elif command == "add":
         __add_order__()
-        pass
     elif command == "find":
         order_id = input("Enter the order number you want to see : ")
         __find_order__(order_id)
-        pass
     elif command == "findAll":
         __find_all_order__()
-        pass
-    elif command == "search":
-        __order_search__(*params)
-        pass
+
 
 
 def __add_order__():
-    print("Enter order details")
-    o = Order()
-    o.order_id = o.last_order_id + 1
-    o.customer_id = input("customer id : ")
-    total_price = 0
+    if user.__get_logged_user_type() == "CUSTOMER":
+        print("Enter order details")
+        o = Order()
+        o.order_id = o.last_order_id + 1
+        o.customer_id = input("customer id : ")
+        total_price = 0
 
-    items = item.get_items()
-    for i in items:
-        details = Detail()
-        status = input(i.name + " " + i.price + " plz enter add or skip item : ")
-        if status == "add":
-            details.order_id = o.order_id
-            details.item_id = i.item_id
-            details.item_price = int(i.price)
-            details.item_qty = int(input("The number of items you take : "))
-            details.item_total_price = int(i.price) * int(details.item_qty)
-            total_price += int(details.item_total_price)
-            details.save()
-        else:
-            pass
+        items = item.get_items()
+        for i in items:
+            details = Detail()
+            status = input(i.name + " " + i.price + " plz enter add or skip item : ")
+            if status == "add":
+                details.order_id = o.order_id
+                details.item_id = i.item_id
+                details.item_price = int(i.price)
+                details.item_qty = int(input("The number of items you take : "))
+                details.item_total_price = int(i.price) * int(details.item_qty)
+                total_price += int(details.item_total_price)
+                details.save()
+            else:
+                pass
+            #ACPECT ORIANTED PROGAMMING
 
-    o.total_price = total_price
-    o.save()
-    print("Success added")
+        o.total_price = total_price
+        o.save()
+        print("Success added")
+    else:
+        print("You have not promotion")
 
 
 def __find_all_order__():
-    order = Order()
-    orders = order.all()
-    for order in orders:
-        print(order.order_id, order.customer_id, order.total_price)
-
+    if user.__get_logged_user_type() == "OWNER":
+        order = Order()
+        orders = order.all()
+        for order in orders:
+            print(order.order_id, order.customer_id, order.total_price)
+    else:
+        print("You have not promotion")
 
 def __find_order__(order_id):
     order = Order()
@@ -82,17 +83,6 @@ def __find_order__(order_id):
         print(" \t", data.order_detail_id, data.order_id, data.item_id, data.item_price, data.item_price,
               data.item_total_price)
 
-
-def __order_search__(key, value):
-    pass
-
-
-def __add_order_details__(order_id, item_id, item_qty, item_price, total_price):
-    pass
-
-
-def __find_order_detail_by_order_id(order_id):
-    pass
 
 
 class Order:

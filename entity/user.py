@@ -14,15 +14,15 @@ def db():
     os.makedirs(__user_folder__)
 
 
-def __get_logged_user():
+def __get_logged_user_type():
     f = open(__session_file__, "r")
-    username = f.readline()
-    return username
+    user_type = f.readline()
+    return user_type
 
 
 def view():
-    username = __get_logged_user()
-    print(username)
+    user_type = __get_logged_user_type()
+    print(user_type)
 
 
 def login():
@@ -34,8 +34,8 @@ def login():
         if password == user.password:
             print(user.username, " is login")
             f = open(__session_file__, "w")
-            f.write(username)
-            f.close
+            f.write(user.type)
+            f.close()
         else:
             print("Incorrect password")
     else:
@@ -81,6 +81,9 @@ class User:
 
         with open(f"{__user_folder__}/{self.username}.db", "w") as item_file:
             json.dump(_data_, item_file)
+        f = open(__session_file__, "w")
+        f.write(_data_.get("usertype"))
+        f.close()
         print(self.username, " is success added")
 
     def find(self, username):

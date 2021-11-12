@@ -2,6 +2,7 @@ from os import waitpid
 import json
 import os
 from pprint import pprint
+import user
 
 __db_location__ = "db/item"
 __item_folder__ = f"{__db_location__}/items"
@@ -30,12 +31,15 @@ def set_command_and_params(command, params):
 
 
 def __item_create__():
-    item = Item()
-    item.name = input("Enter item name : ")
-    item.qty = input("Enter item qty : ")
-    item.price = input("Enter item base price : ")
-    item.save()
-    print("Item is success added")
+    if user.__get_logged_user_type() == "OWNER":
+        item = Item()
+        item.name = input("Enter item name : ")
+        item.qty = input("Enter item qty : ")
+        item.price = input("Enter item base price : ")
+        item.save()
+        print("Item is success added")
+    else:
+        print("You have not promotion")
 
 
 def __item_find__(item_id):
@@ -53,15 +57,20 @@ def __item_all__():
 
 
 def get_items():
-    item = Item()
-    return item.all()
+    if user.__get_logged_user_type() == "OWNER":
+        item = Item()
+        return item.all()
+    else:
+        print("You have not promotion")
 
 
 def __item_search__(key, value):
-    item = Item()
-    results = item.search(key, value)
-    pprint(results)
-
+    if user.__get_logged_user_type() == "OWNER":
+        item = Item()
+        results = item.search(key, value)
+        pprint(results)
+    else:
+        print("You have not promotion")
 
 class Item:
     def __init__(self):
